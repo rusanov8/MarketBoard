@@ -20,11 +20,14 @@ services:
     depends_on:
       - db
 
+
+
   nginx:
     image: nginx:1.19.3
     ports:
       - "8000:8000"
       - "3000:3000"
+    command: nginx -g 'daemon off;'
     volumes:
       - ../skymarket/django_static/:/usr/share/nginx/html/django_static/
       - ../skymarket/django_media/:/usr/share/nginx/html/django_media/
