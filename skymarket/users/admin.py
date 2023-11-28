@@ -2,5 +2,14 @@ from django.contrib import admin
 from django.contrib.auth.admin import UserAdmin
 
 from users.models import User
-# TODO Aдмика для пользователя - как реализовать ее можно подсмотреть в документаци django
-# TODO Обычно её всегда оформляют, но в текущей задачи делать её не обязательно
+
+
+@admin.register(User)
+class AdminUser(admin.ModelAdmin):
+    """
+       Custom User admin to customize the display and functionality in the Django admin panel.
+    """
+
+    list_display = ('email', 'first_name', 'last_name')
+    search_fields = ('email', 'first_name', 'last_name', 'phone')
+    list_filter = ('role', )

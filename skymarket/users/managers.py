@@ -1,12 +1,18 @@
 from django.contrib.auth.models import (
     BaseUserManager
 )
-# TODO здесь должен быть менеджер для модели Юзера.
-# TODO Поищите эту информацию в рекомендациях к проекту
 
 
 class UserManager(BaseUserManager):
-    def create_user(self, email, first_name, last_name, phone, password=None):
+    """
+    Custom manager for the User model.
+    """
+
+    def create_user(self, email, first_name, last_name, phone, password=None, role="user"):
+        """
+            Create and return a regular user with an email and password.
+        """
+
         if not email:
             raise ValueError('Users must have an email address')
         user = self.model(
@@ -14,7 +20,7 @@ class UserManager(BaseUserManager):
             first_name=first_name,
             last_name=last_name,
             phone=phone,
-            role="user"
+            role=role
         )
         user.is_active = True
         user.set_password(password)
@@ -22,7 +28,10 @@ class UserManager(BaseUserManager):
 
         return user
 
-    def create_superuser(self, email, first_name, last_name, phone, password=None):
+    def create_superuser(self, email, first_name, last_name, phone, password=None, **kwargs):
+        """
+            Create and return a superuser with an email, password, and admin role.
+        """
 
         user = self.create_user(
             email,
@@ -30,10 +39,9 @@ class UserManager(BaseUserManager):
             last_name=last_name,
             phone=phone,
             password=password,
-            role="admin"
+            role=kwargs.get('role')
         )
 
-        user.save()
         return user
 
 

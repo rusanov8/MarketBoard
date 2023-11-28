@@ -1,15 +1,40 @@
 from djoser.serializers import UserCreateSerializer as BaseUserRegistrationSerializer
 from rest_framework import serializers
-from django.contrib.auth import get_user_model
-
-User = get_user_model()
-# TODO Здесь нам придется переопределить сериалайзер, который использует djoser
-# TODO для создания пользователя из за того, что у нас имеются нестандартные поля
+from .models import User
 
 
 class UserRegistrationSerializer(BaseUserRegistrationSerializer):
-    pass
+    """
+      Serializer for user registration, extending Djoser's BaseUserRegistrationSerializer.
+
+      Includes the password field for user registration.
+
+      Args:
+          BaseUserRegistrationSerializer (class): Djoser's BaseUserRegistrationSerializer class.
+
+      Returns:
+          class: UserRegistrationSerializer class.
+      """
+
+    password = serializers.CharField(style={"input_type": "password"})
+
+    class Meta(BaseUserRegistrationSerializer.Meta):
+        model = User
+        fields = ('email', 'first_name', 'last_name', 'password', 'phone', 'image')
 
 
-class CurrentUserSerializer(serializers.ModelSerializer):
-    pass
+class CustomUserSerializer(serializers.ModelSerializer):
+    """
+    Custom serializer for the User model.
+
+    Args:
+        serializers (module): The serializers module from Django REST framework.
+        model (class): The User model.
+
+    Returns:
+        class: CustomUserSerializer class.
+    """
+
+    class Meta:
+        model = User
+        fields = ('first_name', 'last_name', 'phone', 'id', 'email', 'image')
