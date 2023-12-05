@@ -2,12 +2,21 @@ from django.contrib import admin
 
 from ads.models import Ad, Comment
 
-"""
-Django admin configuration for managing Ads and Comments.
+from django.contrib import admin
 
-Registers the Ad and Comment models with the Django admin interface.
-"""
 
-admin.site.register(Ad)
+@admin.register(Ad)
+class UserAdmin(admin.ModelAdmin):
+    """
+        Admin configuration for the Ad model.
+    """
+    list_display = ('title', 'author')
 
-admin.site.register(Comment)
+
+@admin.register(Comment)
+class UserAdmin(admin.ModelAdmin):
+    """
+        Admin configuration for the Comment model.
+    """
+    list_display = ('ad', 'text')
+

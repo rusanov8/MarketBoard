@@ -54,3 +54,4 @@ class AdDetailSerializer(serializers.ModelSerializer):
 
     def get_phone(self, instance):
         return str(instance.author.phone)
+

@@ -1,8 +1,8 @@
 from django.shortcuts import get_object_or_404
 from django_filters import rest_framework as django_filters
-from rest_framework import pagination, viewsets
+from rest_framework import pagination, viewsets, status
 from rest_framework.response import Response
-from rest_framework.permissions import IsAuthenticated, IsAuthenticatedOrReadOnly
+from rest_framework.permissions import IsAuthenticated, IsAuthenticatedOrReadOnly, AllowAny
 from .permissions import IsAdminOrOwner
 from ads.models import Ad, Comment
 from ads.serializers import AdSerializer, AdDetailSerializer, CommentSerializer
@@ -27,7 +27,6 @@ class AdViewSet(viewsets.ModelViewSet):
     pagination_class = AdPagination
     filter_backends = (django_filters.DjangoFilterBackend,)
     filterset_class = AdFilterSet
-
 
     def get_queryset(self):
         return Ad.objects.filter(author=self.request.user) if 'me' in self.request.path else Ad.objects.all()
@@ -66,7 +65,7 @@ class CommentViewSet(viewsets.ModelViewSet):
     def get_queryset(self):
         ad_pk = self.kwargs.get('ad_pk')
         ad = get_object_or_404(Ad, pk=ad_pk)
-        return Comment.objects.filter(ad=ad)
+        return Comment.objects.filter(ad=ad).select_related('ad', 'author')
 
     def get_permissions(self):
 
@@ -88,7 +87,21 @@ class CommentViewSet(viewsets.ModelViewSet):
         ad = get_object_or_404(Ad, pk=self.kwargs.get('ad_pk'))
         comment = get_object_or_404(Comment, pk=self.kwargs.get('pk'), ad=ad)
         serializer = self.get_serializer(comment)
-        return Response(serializer.data)
+        return Response(serializer.data, status=status.HTTP_200_OK)
+
+    def create(self, request, *args, **kwargs):
+        ad = get_object_or_404(Ad, pk=self.kwargs.get('ad_pk'))
+
+        if not ad:
+            return Response({"detail": "Ad not found"}, status=status.HTTP_404_NOT_FOUND)
+
+        serializer = self.get_serializer(data=request.data)
+        serializer.is_valid(raise_exception=True)
+        self.perform_create(serializer)
+        return Response(serializer.data, status=status.HTTP_201_CREATED)
+
+
+
 
 
 
