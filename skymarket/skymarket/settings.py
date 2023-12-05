@@ -49,7 +49,8 @@ INSTALLED_APPS = [
     "drf_yasg",
     "djoser",
     "phonenumber_field",
-    "django_filters"
+    "django_filters",
+    'debug_toolbar'
 ]
 
 MIDDLEWARE = [
@@ -61,6 +62,7 @@ MIDDLEWARE = [
     "django.contrib.auth.middleware.AuthenticationMiddleware",
     "django.contrib.messages.middleware.MessageMiddleware",
     "django.middleware.clickjacking.XFrameOptionsMiddleware",
+    "debug_toolbar.middleware.DebugToolbarMiddleware",
 ]
 
 ROOT_URLCONF = "skymarket.urls"
@@ -95,12 +97,12 @@ REST_FRAMEWORK = {
     )
 }
 
+
 DJOSER = {
     'SERIALIZERS': {
         'user_create': 'users.serializers.UserRegistrationSerializer',
         'user': 'users.serializers.CustomUserSerializer',
         'current_user': 'users.serializers.CustomUserSerializer',
-
     },
 
     'EMAIL': {
@@ -111,6 +113,12 @@ DJOSER = {
 
     'PASSWORD_RESET_CONFIRM_URL': '#/password/reset/confirm/{uid}/{token}',
     'USERNAME_RESET_CONFIRM_URL': '#/username/reset/confirm/{uid}/{token}',
+
+    'PERMISSIONS': {
+        'user': ['djoser.permissions.CurrentUserOrAdminOrReadOnly'],
+        'user_list': ['djoser.permissions.CurrentUserOrAdminOrReadOnly'],
+    },
+
 
 }
 
@@ -194,3 +202,7 @@ EMAIL_USE_SSL = False
 SERVER_EMAIL = EMAIL_HOST_USER
 DEFAULT_FROM_EMAIL = EMAIL_HOST_USER
 
+INTERNAL_IPS = [
+    "127.0.0.1",
+    "localhost"
+]

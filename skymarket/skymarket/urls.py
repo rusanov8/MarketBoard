@@ -8,7 +8,8 @@ urlpatterns = [
     path("api/admin/", admin.site.urls),
     path("api/redoc-tasks/", include("redoc.urls")),
     path('api/', include('users.urls', namespace='users')),
-    path('api/', include('ads.urls', namespace='ads'))
+    path('api/', include('ads.urls', namespace='ads')),
+    path("__debug__/", include("debug_toolbar.urls")),
 
 ]
 urlpatterns += static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)

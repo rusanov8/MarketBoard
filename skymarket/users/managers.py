@@ -8,7 +8,7 @@ class UserManager(BaseUserManager):
     Custom manager for the User model.
     """
 
-    def create_user(self, email, first_name, last_name, phone, password=None, role="user"):
+    def create_user(self, email, first_name, last_name, phone, image, password=None, role="user"):
         """
             Create and return a regular user with an email and password.
         """
@@ -19,7 +19,9 @@ class UserManager(BaseUserManager):
             email=self.normalize_email(email),
             first_name=first_name,
             last_name=last_name,
+            image=image,
             phone=phone,
+
             role=role
         )
         user.is_active = True
