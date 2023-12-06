@@ -6,4 +6,6 @@ RUN apk add --update python3 make g++ && rm -rf /var/cache/apk/*
 RUN npm i
 COPY . ./
 RUN ls -la
-CMD npm run build
+RUN npm install -g serve
+CMD npm run build && serve -s build
+
